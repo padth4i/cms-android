@@ -11,7 +11,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _rememberMe = false;
-  bool passwordVisible = false;
+  bool passwordInvisible = true;
   TextEditingController _usernameController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
 
@@ -51,11 +51,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  @override
-  void initState() {
-    passwordVisible = false;
-  }
-
   Widget _buildPasswordTF() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
           height: 60.0,
           child: TextField(
             controller: _passwordController,
-            obscureText: passwordVisible,
+            obscureText: passwordInvisible,
             style: TextStyle(
               color: Colors.black,
               fontFamily: 'HKGrotesk',
@@ -87,12 +82,12 @@ class _LoginScreenState extends State<LoginScreen> {
               hintStyle: kHintTextStyle,
               suffixIcon: IconButton(
                 icon: Icon(
-                  passwordVisible ? Icons.visibility : Icons.visibility_off,
+                  passwordInvisible ? Icons.visibility_off : Icons.visibility,
                   color: Colors.black,
                 ),
                 onPressed: () {
                   setState(() {
-                    passwordVisible = !passwordVisible;
+                    passwordInvisible = !passwordInvisible;
                   });
                 },
               ),
@@ -100,20 +95,6 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildForgotPasswordBtn() {
-    return Container(
-      alignment: Alignment.centerRight,
-      child: FlatButton(
-        onPressed: () => print('Forgot Password Button Pressed'),
-        padding: EdgeInsets.only(right: 0.0),
-        child: Text(
-          'Forgot Password?',
-          style: kLabelStyle,
-        ),
-      ),
     );
   }
 
@@ -213,16 +194,6 @@ class _LoginScreenState extends State<LoginScreen> {
           'Powered by CMS',
           style: kLabelStyle,
         ),
-        Container(
-          margin: EdgeInsets.only(top: 25),
-          child: Text(
-            '<< By the Club | Of the Club | For the Club >>',
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ),
       ],
     );
   }
@@ -261,44 +232,33 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 40.0,
+                ),
                 height: double.infinity,
-                //TODO: Remove ScrollView
-                child: SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 40.0,
-                    vertical: 120.0,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        'amFOSS CMS',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: 'HKGrotesk',
-                          fontSize: 30.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 30.0),
-                      _buildEmailTF(),
-                      SizedBox(
-                        height: 30.0,
-                      ),
-                      _buildPasswordTF(),
-                      _buildForgotPasswordBtn(),
-                      _buildRememberMeCheckbox(),
-                      _buildLoginBtn(),
-                      _buildSignInWithText(),
-                    ],
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Image.asset('assets/images/amfoss.png', width: MediaQuery.of(context).size.width / 3.5),
+                    SizedBox(height: 30.0),
+                    _buildEmailTF(),
+                    SizedBox(
+                      height: 30.0,
+                    ),
+                    _buildPasswordTF(),
+                    // TODO: Implement remember me
+                    // _buildRememberMeCheckbox(),
+                    SizedBox(height: 30,),
+                    _buildLoginBtn(),
+                    _buildSignInWithText(),
+                  ],
                 ),
               )
             ],
           ),
         ),
       ),
+      resizeToAvoidBottomPadding: false,
     );
   }
 }
