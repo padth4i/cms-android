@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 final kHintTextStyle = TextStyle(
   color: Colors.black54,
-  fontFamily: 'OpenSans',
+  fontFamily: 'HKGrotesk',
 );
 
 final kLabelStyle = TextStyle(
   color: Colors.black,
   fontWeight: FontWeight.bold,
-  fontFamily: 'OpenSans',
+  fontFamily: 'HKGrotesk',
 );
 
 final kBoxDecorationStyle = BoxDecoration(

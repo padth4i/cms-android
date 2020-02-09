@@ -2,6 +2,7 @@ import 'package:cms_android/screens/home.dart';
 import 'package:cms_android/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -11,6 +12,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool _rememberMe = false;
   bool passwordVisible = false;
+  TextEditingController _usernameController = new TextEditingController();
+  TextEditingController _passwordController = new TextEditingController();
 
   Widget _buildEmailTF() {
     return Column(
@@ -27,9 +30,10 @@ class _LoginScreenState extends State<LoginScreen> {
           height: 60.0,
           child: TextField(
             keyboardType: TextInputType.emailAddress,
+            controller: _usernameController,
             style: TextStyle(
               color: Colors.black,
-              fontFamily: 'OpenSans',
+              fontFamily: 'HKGrotesk',
             ),
             decoration: InputDecoration(
               border: InputBorder.none,
@@ -66,10 +70,11 @@ class _LoginScreenState extends State<LoginScreen> {
           decoration: kBoxDecorationStyle,
           height: 60.0,
           child: TextField(
+            controller: _passwordController,
             obscureText: passwordVisible,
             style: TextStyle(
               color: Colors.black,
-              fontFamily: 'OpenSans',
+              fontFamily: 'HKGrotesk',
             ),
             decoration: InputDecoration(
               border: InputBorder.none,
@@ -157,10 +162,45 @@ class _LoginScreenState extends State<LoginScreen> {
             letterSpacing: 1.5,
             fontSize: 18.0,
             fontWeight: FontWeight.bold,
-            fontFamily: 'OpenSans',
+            fontFamily: 'HKGrotesk',
           ),
         ),
-        onPressed: () => Navigator.pop(context)
+        onPressed: () async {
+          final String authMutation = '''
+                        mutation{
+                          tokenAuth(username:"${_usernameController.text}", password:"${_passwordController.text}") {
+                            token
+                            }
+                        }
+                        ''';
+
+          final HttpLink httpLink = HttpLink(
+            uri: 'https://api.amfoss.in/',
+          );
+          GraphQLClient _client = GraphQLClient(
+              link: httpLink,
+              cache:
+                  OptimisticCache(dataIdFromObject: typenameDataIdFromObject));
+          QueryResult result =
+              await _client.mutate(MutationOptions(document: authMutation));
+
+          String token = result.data['tokenAuth']['token'];
+          final AuthLink authLink = AuthLink(
+            getToken: () async => 'JWT $token',
+          );
+          final Link link = authLink.concat(httpLink);
+
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(
+                token: token,
+                url: link,
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -185,6 +225,13 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
   }
 
   @override
@@ -229,7 +276,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         'amFOSS CMS',
                         style: TextStyle(
                           color: Colors.black,
-                          fontFamily: 'OpenSans',
+                          fontFamily: 'HKGrotesk',
                           fontSize: 30.0,
                           fontWeight: FontWeight.bold,
                         ),
