@@ -24,7 +24,7 @@ class _Attendance extends State<Attendance> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Query(
-        options: QueryOptions(document: query),
+        options: QueryOptions(documentNode: gql(query)),
         builder: (QueryResult result,
             {VoidCallback refetch, FetchMore fetchMore}) {
           if (result.loading) {

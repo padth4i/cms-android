@@ -195,7 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
             context,
             MaterialPageRoute(
               builder: (context) => HomePage(
-                token: token,
+                username: _usernameController.text,
                 url: link,
               ),
             ),
